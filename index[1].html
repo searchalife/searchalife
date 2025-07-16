@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Get a Life</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<canvas id="celebration-canvas"></canvas>
+
+<div class="content-wrapper">
+  <section class="hero">
+    <h1 class="fw-bold">Get a Life</h1>
+    <p>
+      I've made a randomizer which randomizes the amount of lives you get when you press the button below.
+      After you press the button, you will get a number of lives and you can also claim them afterward.
+    </p>
+    <button id="spin-btn" class="btn-smooth">Randomize Lives</button>
+
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <div id="wheel" class="wheel"></div>
+
+      <div class="number-bar-wrapper">
+        <div class="number-bar" id="number-bar"></div>
+      </div>
+    </div>
+
+    <div id="number-display"></div>
+
+    <button id="claim-btn">Claim Lives</button>
+    <p id="claim-message"></p>
+  </section>
+</div>
+
+<button id="secret-spin-btn" title="Try the secret spin!">Secret Spin Technique</button>
+
+<script src="stars.js"></script>
+<script src="confetti.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
