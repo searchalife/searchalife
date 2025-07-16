@@ -1,0 +1,439 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Get a Life</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+  }
+  body {
+    position: relative;
+    color: #e0e0e0;
+    text-align: center;
+    background: linear-gradient(-45deg, #0d0b1d, #350035, #440044, #1a0a24);
+    background-size: 400% 400%;
+    animation: gradientShift 30s ease infinite;
+    z-index: 0;
+  }
+  @keyframes gradientShift {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+  #starfield {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  #celebration-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+  }
+  .content-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 1rem 8rem 1rem;
+  }
+  .btn-smooth {
+    border-radius: 2rem;
+    padding: 0.75rem 2rem;
+    transition: background 0.3s ease;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border: none;
+    background-color: #fff;
+    color: #512da8;
+  }
+  .btn-smooth:hover {
+    background-color: #ff4081;
+    color: white;
+  }
+  .wheel-container {
+    margin: 2rem auto 0 auto;
+    position: relative;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    border: 8px solid #ff4081;
+    background: #1c1c1ccc;
+    box-shadow: 0 0 15px #ff4081;
+    overflow: hidden;
+    user-select: none;
+  }
+  .wheel {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 8px solid transparent;
+    border-top: 8px solid #ff4081;
+    pointer-events: none;
+  }
+  .spin-animation {
+    animation: spin 5s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg);}
+    to { transform: rotate(2160deg);}
+  }
+  .number-bar-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 240px;
+    height: 40px;
+    overflow: hidden;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    background: #000000bb;
+    box-shadow: 0 0 8px #ff4081;
+    display: flex;
+    align-items: center;
+  }
+  .number-bar {
+    display: flex;
+    white-space: nowrap;
+  }
+  .scrolling {
+    animation: scroll-left 2s linear infinite;
+  }
+  .number-bar span {
+    display: inline-block;
+    width: 36px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #ff4081;
+    margin: 0 6px;
+    user-select: none;
+  }
+  @keyframes scroll-left {
+    0% { transform: translateX(0);}
+    100% { transform: translateX(-50%);}
+  }
+  .pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; 
+    height: 0; 
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 20px solid #ff4081;
+    filter: drop-shadow(0 0 4px #ff4081);
+    z-index: 10;
+    user-select: none;
+  }
+  #number-display {
+    position: relative;
+    margin: 1rem auto 0 auto;
+    font-size: 6rem;
+    font-weight: 900;
+    color: #ff4081;
+    width: max-content;
+    user-select: none;
+    text-align: center;
+  }
+  #claim-btn {
+    margin-top: 2rem;
+    padding: 0.75rem 2.5rem;
+    font-weight: 700;
+    border-radius: 2rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    background-color: #512da8;
+    border: none;
+    color: white;
+    transition: background-color 0.3s ease;
+    display: none;
+  }
+  #claim-btn:hover {
+    background-color: #ff4081;
+  }
+  #claim-message {
+    margin-top: 1rem;
+    color: #90ee90;
+    font-weight: 600;
+    min-height: 1.5em;
+  }
+  @keyframes rainbowGlow {
+    0% {
+      box-shadow: 0 0 8px #ff0000, 0 0 20px #ff0000;
+      text-shadow: 0 0 8px #ff0000;
+    }
+    14% {
+      box-shadow: 0 0 8px #ff7f00, 0 0 20px #ff7f00;
+      text-shadow: 0 0 8px #ff7f00;
+    }
+    28% {
+      box-shadow: 0 0 8px #ffff00, 0 0 20px #ffff00;
+      text-shadow: 0 0 8px #ffff00;
+    }
+    42% {
+      box-shadow: 0 0 8px #00ff00, 0 0 20px #00ff00;
+      text-shadow: 0 0 8px #00ff00;
+    }
+    57% {
+      box-shadow: 0 0 8px #0000ff, 0 0 20px #0000ff;
+      text-shadow: 0 0 8px #0000ff;
+    }
+    71% {
+      box-shadow: 0 0 8px #4b0082, 0 0 20px #4b0082;
+      text-shadow: 0 0 8px #4b0082;
+    }
+    85% {
+      box-shadow: 0 0 8px #8b00ff, 0 0 20px #8b00ff;
+      text-shadow: 0 0 8px #8b00ff;
+    }
+    100% {
+      box-shadow: 0 0 8px #ff0000, 0 0 20px #ff0000;
+      text-shadow: 0 0 8px #ff0000;
+    }
+  }
+  #secret-spin-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #319795;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: none; /* hidden initially */
+    z-index: 10000;
+    animation: rainbowGlow 4s linear infinite;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<canvas id="celebration-canvas"></canvas>
+
+<div class="content-wrapper">
+  <section class="hero">
+    <h1 class="fw-bold">Get a Life</h1>
+    <p>
+      I've made a randomizer which randomizes the amount of lives you get when you press the button below.
+      After you press the button, you will get a number of lives and you can also claim them afterward.
+    </p>
+    <button id="spin-btn" class="btn-smooth">Randomize Lives</button>
+
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <div id="wheel" class="wheel"></div>
+
+      <div class="number-bar-wrapper">
+        <div class="number-bar" id="number-bar"></div>
+      </div>
+    </div>
+
+    <div id="number-display"></div>
+
+    <button id="claim-btn">Claim Lives</button>
+    <p id="claim-message"></p>
+  </section>
+</div>
+
+<button id="secret-spin-btn" title="Try the secret spin!">Secret Spin Technique</button>
+
+<script>
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let stars = [];
+
+  function setup() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+    stars = [];
+    for (let i = 0; i < 150; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.1 + 0.2,
+        alpha: Math.random(),
+        alphaChange: (Math.random() * 0.02) + 0.01,
+      });
+    }
+  }
+  function drawStars() {
+    ctx.clearRect(0, 0, width, height);
+    stars.forEach(s => {
+      s.alpha += s.alphaChange;
+      if (s.alpha <= 0) {
+        s.alpha = 0;
+        s.alphaChange = -s.alphaChange;
+      } else if (s.alpha >= 1) {
+        s.alpha = 1;
+        s.alphaChange = -s.alphaChange;
+      }
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = 'white';
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+  setup();
+  drawStars();
+  window.addEventListener('resize', setup);
+
+  const spinBtn = document.getElementById('spin-btn');
+  const wheel = document.getElementById('wheel');
+  const numberBar = document.getElementById('number-bar');
+  const numberDisplay = document.getElementById('number-display');
+  const claimBtn = document.getElementById('claim-btn');
+  const claimMessage = document.getElementById('claim-message');
+  const secretSpinBtn = document.getElementById('secret-spin-btn');
+  const celebrationCanvas = document.getElementById('celebration-canvas');
+  const celebrationCtx = celebrationCanvas.getContext('2d');
+
+  function resizeCelebrationCanvas() {
+    celebrationCanvas.width = window.innerWidth;
+    celebrationCanvas.height = window.innerHeight;
+  }
+  resizeCelebrationCanvas();
+  window.addEventListener('resize', resizeCelebrationCanvas);
+
+  function fillNumberBar() {
+    numberBar.innerHTML = '';
+    for(let repeat=0; repeat<2; repeat++) {
+      for(let i=1; i<=50; i++) {
+        const span = document.createElement('span');
+        span.textContent = i;
+        numberBar.appendChild(span);
+      }
+    }
+  }
+  fillNumberBar();
+
+  let spinning = false;
+  let currentLives = 0;
+
+  class Particle {
+    constructor(x, y, vx, vy, size, color) {
+      this.x = x; this.y = y;
+      this.vx = vx; this.vy = vy;
+      this.size = size;
+      this.color = color;
+      this.life = 100;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += 0.05;
+      this.life--;
+      this.size *= 0.96;
+    }
+    draw(ctx) {
+      ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = 10;
+      ctx.arc(this.x, this.y, this.size, 0, 2*Math.PI);
+      ctx.fill();
+    }
+  }
+
+  let particles = [];
+
+  function launchConfetti() {
+    for(let i=0; i<150; i++) {
+      const x = Math.random() * celebrationCanvas.width;
+      const y = celebrationCanvas.height + 10;
+      const vx = (Math.random()-0.5)*5;
+      const vy = - (Math.random()*7 + 5);
+      const size = Math.random()*5 + 3;
+      const color = `hsl(${Math.random()*360}, 100%, 65%)`;
+      particles.push(new Particle(x,y,vx,vy,size,color));
+    }
+  }
+
+  function updateConfetti() {
+    celebrationCtx.clearRect(0, 0, celebrationCanvas.width, celebrationCanvas.height);
+    particles = particles.filter(p => p.life > 0 && p.size > 0.5);
+    particles.forEach(p => {
+      p.update();
+      p.draw(celebrationCtx);
+    });
+    if(particles.length > 0) {
+      requestAnimationFrame(updateConfetti);
+    }
+  }
+
+  function startSpin() {
+    if (spinning) return;
+    spinning = true;
+    claimBtn.style.display = 'none';
+    claimMessage.textContent = '';
+    numberDisplay.textContent = '';
+    currentLives = 0;
+    secretSpinBtn.style.display = 'none'; // Hide secret spin while spinning
+
+    wheel.classList.add('spin-animation');
+    numberBar.classList.add('scrolling');
+
+    setTimeout(() => {
+      wheel.classList.remove('spin-animation');
+      numberBar.classList.remove('scrolling');
+
+      currentLives = Math.floor(Math.random() * 46) + 5;
+      numberDisplay.textContent = currentLives;
+      claimBtn.style.display = 'inline-block';
+      claimBtn.disabled = false;
+      claimBtn.textContent = 'Claim Lives';
+
+      spinning = false;
+
+      if (currentLives >= 25) {
+        launchConfetti();
+        updateConfetti();
+      }
+    }, 5200);
+  }
+
+  spinBtn.addEventListener('click', startSpin);
+
+  claimBtn.addEventListener('click', () => {
+    if(currentLives > 0){
+      claimMessage.textContent = `You claimed ${currentLives} lives! Good luck! 🎉`;
+      claimBtn.disabled = true;
+      claimBtn.textContent = 'Claimed';
+      spinBtn.disabled = true;
+      
+      // Show secret spin button AFTER claim
+      secretSpinBtn.style.display = 'inline-block';
+    }
+  });
+
+  secretSpinBtn.addEventListener('click', () => {
+    // Redirect to a different website on secret spin click
+    window.location.href = 'https://grabify.link/A4QAON'; // Change this to your target URL
+  });
+</script>
+
+</body>
+</html>
